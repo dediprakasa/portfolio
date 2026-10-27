@@ -83,6 +83,9 @@
   .broke ol{margin:0 0 12px;padding-left:22px;font-size:.9rem;max-width:68ch}
   .broke li{margin-bottom:8px}
 
+  .cta{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 22px;max-width:100%;
+    background:var(--accent);color:var(--accent-ink);border-radius:4px;text-decoration:none;letter-spacing:.03em;margin:2px 0 18px}
+  .cta:hover,.cta:active{opacity:.85}
   .gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin:14px 0 6px}
   .gal figure{margin:0}
   .gal a{display:block;border:1px solid var(--line);border-radius:4px;background:var(--bg-2);overflow:hidden}
@@ -252,7 +255,9 @@
 
 <section id="try" aria-labelledby="h-try">
   <h2 class="lbl" id="h-try">try it</h2>
-  <p>The labs are token-gated and run on my own machine. There is no public instance yet, and I would rather show nothing than a fake demo. What you can look at: the screenshots below, taken on 2026-10-27 with headless Chromium at phone width through the portal, with a check that no token, hostname or key is in the captured text. A guided public demo is in progress.</p>
+  <p>A live sandbox with three tap-only demos: fix a broken pod on a real cluster, steal a flag with a SQL injection, break a re-entrant contract. Every step runs against the real cluster, app and chain, and you see the raw output. No signup. Your session resets after 5 minutes. The AI lab is not in it, because that one costs money per call.</p>
+  <a class="cta" href="https://thousand-turned-turner-tuner.trycloudflare.com/">open the live demo</a>
+  <p>The full labs stay token-gated on my own machine. The screenshots below were taken on 2026-10-27 with headless Chromium at phone width through the portal, with a check that no token, hostname or key is in the captured text.</p>
   <div class="gal">
     <figure><a href="assets/shots/01-portal-dashboard.png"><img src="assets/shots/01-portal-dashboard.png" width="828" height="1792" loading="lazy" alt="Portal dashboard: timed attempts and six track rows with progress counts"></a><figcaption><b>portal</b> one dashboard, timed attempts and all tracks</figcaption></figure>
     <figure><a href="assets/shots/02-ckad-drills.png"><img src="assets/shots/02-ckad-drills.png" width="828" height="1792" loading="lazy" alt="ckad-sim drill list with difficulty and domain per row"></a><figcaption><b>ckad-sim</b> the drill list</figcaption></figure>
