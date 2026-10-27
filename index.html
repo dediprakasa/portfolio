@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0a0e0c">
+<title>Pepi Drakasa - security / platform / SRE</title>
+<meta name="description" content="Pepi Drakasa builds study labs where passing means proof, not self-report: Kubernetes incident drills checked against a real cluster, exploit challenges whose flags unlock only with recorded proof, and labs that grade on measured model behaviour. Open to security, platform and SRE roles in Germany.">
+<meta property="og:title" content="Pepi Drakasa - security / platform / SRE">
+<meta property="og:description" content="Tools where passing means proof, not self-report. Every number on the page was re-measured with the commands listed at the bottom.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://dediprakasa.github.io/portfolio/">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<style>
+  /* Same identity as the labs: one mono face, one phosphor accent, thin rules, no gradients, no glow. */
+  :root{
+    --mono:'DejaVu Sans Mono','Noto Sans Mono',ui-monospace,monospace;
+    --bg:#0a0e0c; --bg-2:#0f1512; --line:#1f2b25; --line-2:#17211c;
+    --fg:#d9e8de; --dim:#8aa398; --faint:#6f8a7c;
+    --accent:#5ee08f; --accent-ink:#04130a;
+    --step:clamp(13px,3.4vw,14.5px);
+  }
+  *{box-sizing:border-box;font-weight:400;-webkit-tap-highlight-color:transparent}
+  html{color-scheme:dark;-webkit-text-size-adjust:100%;scroll-behavior:smooth;scroll-padding-top:56px}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+  body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--mono);font-size:var(--step);
+    line-height:1.6;font-synthesis:none}
+  b,strong,h1,h2,h3,th{font-weight:400}
+  b,strong{color:var(--accent)}
+  h1,h2,h3{line-height:1.3;margin:0}
+  p{margin:0 0 12px;overflow-wrap:anywhere}
+  a{color:var(--accent);text-underline-offset:3px}
+  a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  code,pre,kbd{font-family:inherit}
+  code{background:var(--bg-2);border:1px solid var(--line-2);border-radius:4px;padding:0 4px;font-size:.92em}
+  pre{background:var(--bg-2);border:1px solid var(--line);border-radius:4px;padding:12px;overflow-x:auto;
+    font-size:.74rem;line-height:1.55;margin:10px 0 14px;color:var(--fg)}
+  pre code{background:none;border:0;padding:0;font-size:inherit}
+  .wrap{max-width:760px;margin:0 auto;padding:0 16px}
+  .skip{position:absolute;left:-9999px;top:8px;background:var(--accent);color:var(--accent-ink);padding:10px 14px;z-index:50}
+  .skip:focus{left:8px}
+
+  header.top{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--line)}
+  header.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  nav{min-width:0;flex:1 1 auto;display:flex;justify-content:flex-end}
+  .brand{color:var(--fg);text-decoration:none;display:inline-flex;align-items:center;min-height:44px;letter-spacing:-.02em;white-space:nowrap}
+  .brand .cur{color:var(--accent);margin-left:4px}
+  nav ul{list-style:none;margin:0;padding:0;display:flex;gap:0;min-width:0;max-width:100%;overflow-x:auto;scrollbar-width:none}
+  nav ul::-webkit-scrollbar{display:none}
+  nav a{display:inline-flex;align-items:center;min-height:44px;padding:0 9px;color:var(--dim);text-decoration:none;
+    font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;border-bottom:2px solid transparent}
+  nav a:active,nav a:hover{color:var(--accent);border-bottom-color:var(--accent)}
+
+  section{padding:30px 0 22px;border-bottom:1px solid var(--line-2)}
+  .lbl{font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);display:flex;align-items:center;gap:8px;margin:0 0 16px;font-variant-numeric:tabular-nums}
+  .lbl::after{content:"";flex:1;height:1px;background:var(--line)}
+
+  .kicker{color:var(--dim);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px}
+  h1{font-size:clamp(1.3rem,5.4vw,1.95rem);letter-spacing:-.01em;margin-bottom:12px}
+  .lede{color:var(--dim);font-size:.92rem;max-width:62ch}
+  .hero-nums{list-style:none;margin:22px 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px}
+  .hero-nums li{border:1px solid var(--line);border-left:2px solid var(--accent);border-radius:4px;background:var(--bg-2);padding:12px 10px 10px}
+  .hero-nums .n{display:block;font-size:clamp(1.5rem,6.5vw,2.1rem);line-height:1;color:var(--accent);font-variant-numeric:tabular-nums}
+  .hero-nums .l{display:block;font-size:.7rem;color:var(--dim);margin-top:8px;line-height:1.45}
+
+  .case{padding:20px 0 6px;border-top:1px solid var(--line-2)}
+  .case:first-of-type{border-top:0;padding-top:4px}
+  .case h3{font-size:1.02rem;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px}
+  .case h3 small{color:var(--dim);font-size:.76rem;letter-spacing:.03em}
+  .case h3 .ix{color:var(--faint);margin-right:2px;font-variant-numeric:tabular-nums}
+  .case p{font-size:.9rem}
+  .nums{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:8px;margin:12px 0 14px}
+  .nums div{border:1px solid var(--line);border-radius:4px;background:var(--bg-2);padding:8px 9px}
+  .nums dt{color:var(--accent);font-size:1.15rem;line-height:1.2;font-variant-numeric:tabular-nums}
+  .nums dd{margin:2px 0 0;color:var(--dim);font-size:.7rem;line-height:1.4}
+  .proof{border:1px solid var(--line-2);border-left:2px solid var(--accent);border-radius:4px;background:var(--bg-2);padding:10px 12px;margin:0 0 12px}
+  .proof p{margin:0;font-size:.84rem;color:var(--fg)}
+  .proof p+p{margin-top:8px}
+  .stack{color:var(--faint);font-size:.72rem;letter-spacing:.03em;margin-bottom:10px}
+
+  .broke p{font-size:.9rem;max-width:68ch}
+  .broke ol{margin:0 0 12px;padding-left:22px;font-size:.9rem;max-width:68ch}
+  .broke li{margin-bottom:8px}
+
+  .gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin:14px 0 6px}
+  .gal figure{margin:0}
+  .gal a{display:block;border:1px solid var(--line);border-radius:4px;background:var(--bg-2);overflow:hidden}
+  .gal a:hover,.gal a:focus-visible{border-color:var(--accent)}
+  .gal img{display:block;width:100%;height:auto;aspect-ratio:828/1792}
+  .gal figcaption{font-size:.7rem;color:var(--dim);margin-top:6px;line-height:1.45}
+  .gal figcaption b{color:var(--fg)}
+
+  table{border-collapse:collapse;width:100%;font-size:.76rem;margin:8px 0 14px}
+  td,th{text-align:left;padding:8px 8px;border-bottom:1px solid var(--line-2);vertical-align:top}
+  th{color:var(--dim);letter-spacing:.08em;text-transform:uppercase;font-size:.64rem}
+  td.n{text-align:right;color:var(--accent);font-variant-numeric:tabular-nums;white-space:nowrap}
+  .tbl{overflow-x:auto}
+  .note{color:var(--dim);font-size:.78rem}
+
+  footer{padding:26px 0 48px}
+  footer ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:0 22px}
+  footer a{display:inline-flex;align-items:center;min-height:44px}
+  footer .fine{color:var(--faint);font-size:.7rem;margin-top:10px}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">skip to content</a>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#top">pepi drakasa<span class="cur">_</span></a>
+    <nav aria-label="sections">
+      <ul>
+        <li><a href="#thesis">thesis</a></li>
+        <li><a href="#work">work</a></li>
+        <li><a href="#broke">what broke</a></li>
+        <li><a href="#try">try it</a></li>
+        <li><a href="#how">numbers</a></li>
+        <li><a href="#contact">contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="wrap">
+
+<section id="top" aria-labelledby="h-hero">
+  <p class="kicker">Pepi Drakasa - security / platform / SRE</p>
+  <h1 id="h-hero">I build tools where passing means proof, not self-report.</h1>
+  <p class="lede">Open to security, platform and SRE roles in Germany. Below: five study labs and the portal in front of them. Every claim carries a number, and every number was re-measured on 2026-10-26 with the commands at the <a href="#how">bottom of the page</a>.</p>
+  <ul class="hero-nums" aria-label="headline numbers">
+    <li><span class="n">616</span><span class="l">tests passing across 5 repos, run today</span></li>
+    <li><span class="n">73</span><span class="l">Kubernetes drills (47 CKAD + 26 CKA) against a real k3s cluster</span></li>
+    <li><span class="n">22</span><span class="l">exploit challenges (12 web + 10 on-chain) whose flags unlock only with recorded proof</span></li>
+  </ul>
+</section>
+
+<section id="thesis" aria-labelledby="h-thesis">
+  <h2 class="lbl" id="h-thesis">thesis</h2>
+  <p>Most study tools ask you whether you understood. Mine ask the system. A Kubernetes drill passes when jsonpath and exec-in-pod assertions pass on the cluster, not when a checkbox is ticked. A web exploit passes when the vulnerable code path recorded that it ran. An on-chain flag cannot be read until the contract itself reports <code>solved() == true</code>. The learner cannot talk the tool into a pass, and neither can I.</p>
+  <p>The same rule applies to my own claims. On 2026-10-26 I re-counted every drill, lesson, action and challenge from each app's live API, re-ran every test suite, and re-checked the on-chain registry with <code>cast</code>. Where a check failed, the number says so instead of being rounded up. The commands are at the bottom so a reader who cares can re-run them.</p>
+</section>
+
+<section id="work" aria-labelledby="h-work">
+  <h2 class="lbl" id="h-work">case studies - 5</h2>
+
+  <article class="case" id="ckad-sim">
+    <h3><span class="ix">01</span>ckad-sim <small>kubernetes incident drills, phone-first</small></h3>
+    <p>A CKAD incident simulator. Each drill applies a broken manifest set into its own namespace on a real k3s node. You investigate and repair it with tap-driven <code>kubectl</code> actions, then ask the app to check. The check is a set of assertions, never a self-report. A timed exam mode scores a random draw of drills per CKAD domain.</p>
+    <dl class="nums">
+      <div><dt>47</dt><dd>incident drills</dd></div>
+      <div><dt>18</dt><dd>ordered lessons over them</dd></div>
+      <div><dt>188</dt><dd>tap actions</dd></div>
+      <div><dt>9</dt><dd>CKAD domains covered</dd></div>
+      <div><dt>419</dt><dd>pytest passing</dd></div>
+      <div><dt>7,603</dt><dd>lines (py + html + sh)</dd></div>
+    </dl>
+    <div class="proof">
+      <p><b>passing means:</b> every check is a jsonpath or exec-in-pod assertion run against the cluster. An independent verifier applies each drill into a throwaway namespace, confirms the broken state fails all of its checks, runs the documented fix, and confirms all checks pass.</p>
+      <p>On 2026-10-26 that verifier passed <b>44 of the 47</b> drills. The other three are reported as failing, not rounded up: for <code>svc-selector</code> and <code>init-blocked</code> the documented fix does not pass every check, and for <code>liveness-port</code> the broken state does not fail every check.</p>
+      <p>The sandbox forces every command into the drill's namespace, rejects <code>-A</code> and cluster-scoped resources, limits <code>kubectl auth</code> to <code>can-i</code>, and gives <code>helm</code> only release and chart-reading subcommands.</p>
+    </div>
+    <p class="stack">python / fastapi / k3s v1.36.5 / kubectl / helm / kustomize / systemd / cloudflared</p>
+  </article>
+
+  <article class="case" id="cka-lab">
+    <h3><span class="ix">02</span>cka-lab <small>cluster-level drills</small></h3>
+    <p>The CKA counterpart. The breakage lives in the cluster rather than in one app: RBAC that denies the right subject, nodes that need cordoning and draining, PersistentVolumes that never bind, quotas and LimitRanges that block a rollout, services that route nowhere. Same tap-driven loop, same assertion-based check.</p>
+    <dl class="nums">
+      <div><dt>26</dt><dd>cluster drills</dd></div>
+      <div><dt>13</dt><dd>lessons</dd></div>
+      <div><dt>113</dt><dd>tap actions</dd></div>
+      <div><dt>5</dt><dd>CKA domains</dd></div>
+      <div><dt>145</dt><dd>pytest passing</dd></div>
+      <div><dt>5,115</dt><dd>lines (py + html + sh)</dd></div>
+    </dl>
+    <div class="proof">
+      <p><b>passing means:</b> the cluster is back in the documented state. Node, storage and quota drills are checked with the same assertion engine as the pod-level ones, with a guard that refuses commands outside the drill's scope and redacts anything after a <code>#</code> before it is logged.</p>
+    </div>
+    <p class="stack">python / fastapi / k3s / kubectl / systemd</p>
+  </article>
+
+  <article class="case" id="sec-lab">
+    <h3><span class="ix">03</span>sec-lab <small>web security, with a target you attack from the app</small></h3>
+    <p>A reading-and-doing web security path paired with a deliberately vulnerable document portal on loopback. Every lesson carries an executable exercise: tap an action, the app runs the real request against the target and shows the raw response with timing. Twelve exploit challenges each hand out a flag.</p>
+    <dl class="nums">
+      <div><dt>22</dt><dd>lessons in 6 phases</dd></div>
+      <div><dt>95</dt><dd>executable exercise actions</dd></div>
+      <div><dt>12</dt><dd>exploit challenges, 8 categories</dd></div>
+      <div><dt>293</dt><dd>checklist and quiz items</dd></div>
+      <div><dt>14</dt><dd>pytest passing</dd></div>
+      <div><dt>7,078</dt><dd>lines (py + html + sh)</dd></div>
+    </dl>
+    <div class="proof">
+      <p><b>passing means:</b> the flag matches <em>and</em> the target wrote a proof line for that challenge, which it does only when the real vulnerable code path executed. A guessed or shared flag never passes: no proof, no pass. Exercise steps stay done once done, so a later failed re-run cannot regress progress.</p>
+      <p>The only way the app touches the target is a probe pinned to one loopback origin: 8 allow-listed header pairs, an 8,192-byte body cap, a 10 s timeout, and no redirect following, so a <code>Location</code> back into an internal service is shown, not chased.</p>
+    </div>
+    <p class="stack">python / fastapi / httpx / sqlite target / systemd</p>
+  </article>
+
+  <article class="case" id="chain-lab">
+    <h3><span class="ix">04</span>chain-lab <small>smart-contract security on a local chain</small></h3>
+    <p>Ten deliberately vulnerable Solidity contracts on a loopback <code>anvil</code> node, one lesson per bug class: reentrancy, access control, <code>tx.origin</code>, unchecked calls, delegatecall storage collision, weak randomness, oracle manipulation, signature replay, rounding drain, DoS by unbounded loop. The attack block shows the exact <code>cast</code> command before you run it and runs it server-side, step by step, in order.</p>
+    <dl class="nums">
+      <div><dt>10</dt><dd>vulnerable contracts, 10 challenges</dd></div>
+      <div><dt>32</dt><dd>ordered attack steps</dd></div>
+      <div><dt>12</dt><dd>lessons in 6 phases</dd></div>
+      <div><dt>1,523</dt><dd>lines of Solidity</dd></div>
+      <div><dt>10</dt><dd>forge tests + 12 pytest passing</dd></div>
+      <div><dt>5,887</dt><dd>lines total</dd></div>
+    </dl>
+    <div class="proof">
+      <p><b>passing means:</b> flags are locked in an on-chain <code>FlagRegistry</code> at deploy time, each bound to its challenge contract. <code>peek(id)</code> and <code>capture(id)</code> revert until that contract reports <code>solved() == true</code>, so the only way to learn a flag is to have driven the exploit. There is no code path that returns a flag for an unsolved challenge.</p>
+      <p>Checked today with <code>cast</code>: all 10 registry bindings resolve, and <code>peek</code> on an unsolved challenge reverts with <code>not solved</code>. A timed capture-the-flag mode redeploys a fresh chain per attempt.</p>
+    </div>
+    <p class="stack">solidity 0.8 / foundry (forge, cast, anvil) / python / fastapi</p>
+  </article>
+
+  <article class="case" id="ai-roadmap">
+    <h3><span class="ix">05</span>ai-roadmap + portal <small>labs that measure the model, one URL for everything</small></h3>
+    <p>An AI engineering path where eight lessons carry an executable lab that calls a real model and grades the learner on what it measured: unique outputs across identical prompts, pairwise similarity, latency, tokens, retrieval hit rate, injection resistance. The verdict question unlocks only after the required runs, and the answer is graded against the numbers on screen, not the lesson text.</p>
+    <p>The portal puts one URL and one token in front of all tracks, installable as a PWA. Its reverse proxy drops any client-supplied credentials and injects each upstream app's token server-side from its own <code>token.txt</code>, so the browser never holds a lab token. Tokens travel in the URL fragment, which is never sent to the server, and the one legacy query form is redacted in the access log.</p>
+    <dl class="nums">
+      <div><dt>22</dt><dd>lessons in 5 phases</dd></div>
+      <div><dt>8</dt><dd>executable labs, 8 runners</dd></div>
+      <div><dt>241</dt><dd>checklist, quiz and verdict items</dd></div>
+      <div><dt>26</dt><dd>pytest passing</dd></div>
+      <div><dt>6</dt><dd>portal mounts (5 labs + review queue)</dd></div>
+      <div><dt>7,653</dt><dd>lines (5,645 roadmap + 2,008 portal)</dd></div>
+    </dl>
+    <div class="proof">
+      <p><b>passing means:</b> a lab run returns real metrics or an explicit <code>lab timed out</code> result, never a hang. Each run has a 90 s wall-clock budget across all of its calls, a 100 s backstop in the API for a runner that ignores it, and a 60 s cap on socket silence. A provider that trickles empty lines for half an hour cannot hold a worker.</p>
+    </div>
+    <p class="stack">python / fastapi / httpx / vanilla js / service worker / cloudflared</p>
+  </article>
+</section>
+
+<section id="broke" class="broke" aria-labelledby="h-broke">
+  <h2 class="lbl" id="h-broke">what broke and how I found it</h2>
+  <p>On 2026-10-26 I sent sec-lab, which I had already marked verified, through a cloud multi-agent code review. It came back with 10 verified findings. Four of them:</p>
+  <ol>
+    <li>Exercise progress could regress. Every run overwrote the stored record for a step, so re-running a finished step that then failed flipped it back to not done and dragged the lesson's counters down.</li>
+    <li>A prose exercise silently disappeared. Once every lesson had an interactive runner, the renderer dropped the written exercise (title, steps, done-when) instead of showing both.</li>
+    <li>A timeout was not enforced. The runner's executor was used as a context manager, whose exit waits for the stuck job, so the 10 s limit never fired.</li>
+    <li>The access token was written to the access log. One-tap links carried it in the query string, and uvicorn logs the request line before the page can scrub the address bar.</li>
+  </ol>
+  <p>The same review read the tunnel watchdog. It probed only the public URL, so a local backend blip looked like a dead tunnel: the watchdog rotated a healthy tunnel and the public URL changed for good. The fix probes the local backend first and keeps the tunnel when the app is the one that is down. It is in two of the six tunnel scripts so far; the other four are next.</p>
+  <p>chain-lab was unpassable. The registry address in <code>deployments.json</code> was not the registry. <code>forge script</code> runs the deploy during its simulation phase, so the file-writing cheatcodes fired, then the broadcast failed on a nonce clash with another process using the same account, leaving files that pointed at contracts that were never deployed. Deploys now use an uncontended account, write pending files, and promote them only after all 10 bindings self-check.</p>
+  <p>None of this was caught by reading harder. It was caught by an independent judge script that re-runs every one of the 95 exercise actions through the live API and reports done only when all of them are, and by before/after assertions on every drill: the broken state has to fail every check, and the documented fix has to pass every check. That drill verifier passes 44 of the 47 ckad-sim drills today. The three it rejects, <code>svc-selector</code>, <code>liveness-port</code> and <code>init-blocked</code>, are still open. Self-report is not a pass.</p>
+</section>
+
+<section id="try" aria-labelledby="h-try">
+  <h2 class="lbl" id="h-try">try it</h2>
+  <p>The labs are token-gated and run on my own machine. There is no public instance yet, and I would rather show nothing than a fake demo. What you can look at: the screenshots below, taken today with headless Chromium at phone width through the portal, with a check that no token, hostname or key is in the captured text. A guided public demo is in progress.</p>
+  <div class="gal">
+    <figure><a href="assets/shots/01-portal-dashboard.png"><img src="assets/shots/01-portal-dashboard.png" width="828" height="1792" loading="lazy" alt="Portal dashboard: timed attempts and six track rows with progress counts"></a><figcaption><b>portal</b> one dashboard, timed attempts and all tracks</figcaption></figure>
+    <figure><a href="assets/shots/02-ckad-drills.png"><img src="assets/shots/02-ckad-drills.png" width="828" height="1792" loading="lazy" alt="ckad-sim drill list with difficulty and domain per row"></a><figcaption><b>ckad-sim</b> the drill list</figcaption></figure>
+    <figure><a href="assets/shots/03-ckad-drill.png"><img src="assets/shots/03-ckad-drill.png" width="828" height="1792" loading="lazy" alt="One ckad-sim drill: story, symptom, start, check my fix and tap actions"></a><figcaption><b>ckad-sim</b> a drill: symptom, check button, tap actions</figcaption></figure>
+    <figure><a href="assets/shots/04-ckad-exam.png"><img src="assets/shots/04-ckad-exam.png" width="828" height="1792" loading="lazy" alt="ckad-sim timed exam lobby"></a><figcaption><b>ckad-sim</b> timed exam mode</figcaption></figure>
+    <figure><a href="assets/shots/05-cka-drills.png"><img src="assets/shots/05-cka-drills.png" width="828" height="1792" loading="lazy" alt="cka-lab drill list"></a><figcaption><b>cka-lab</b> cluster-level drills</figcaption></figure>
+    <figure><a href="assets/shots/06-sec-path.png"><img src="assets/shots/06-sec-path.png" width="828" height="1792" loading="lazy" alt="sec-lab study path grouped by phase"></a><figcaption><b>sec-lab</b> the study path</figcaption></figure>
+    <figure><a href="assets/shots/07-sec-exercise.png"><img src="assets/shots/07-sec-exercise.png" width="828" height="1792" loading="lazy" alt="sec-lab exercise runner showing a curl action and the raw HTTP 401 response"></a><figcaption><b>sec-lab</b> exercise runner with the real response</figcaption></figure>
+    <figure><a href="assets/shots/08-sec-flag-lab.png"><img src="assets/shots/08-sec-flag-lab.png" width="828" height="1792" loading="lazy" alt="sec-lab challenge block with flag field"></a><figcaption><b>sec-lab</b> the flag lab</figcaption></figure>
+    <figure><a href="assets/shots/09-chain-attack.png"><img src="assets/shots/09-chain-attack.png" width="828" height="1792" loading="lazy" alt="chain-lab attack lab with chain status and a challenge row"></a><figcaption><b>chain-lab</b> attack lab, chain status, challenge</figcaption></figure>
+    <figure><a href="assets/shots/10-ai-lab.png"><img src="assets/shots/10-ai-lab.png" width="828" height="1792" loading="lazy" alt="ai-roadmap lab with temperature controls and measured results table"></a><figcaption><b>ai-roadmap</b> a lab with its measured results</figcaption></figure>
+  </div>
+  <p class="note">Tap a shot to open it full size.</p>
+</section>
+
+<section id="how" aria-labelledby="h-how">
+  <h2 class="lbl" id="h-how">how these numbers were produced</h2>
+  <p class="note">All of it ran on 2026-10-26 from <code>/root</code> on the machine that hosts the labs. Each app reads its token from its own <code>token.txt</code>; nothing here contains one.</p>
+  <div class="tbl">
+  <table>
+    <thead><tr><th>repo</th><th>content</th><th>tests</th><th>lines</th><th>commits</th></tr></thead>
+    <tbody>
+      <tr><td>ckad-sim</td><td>47 drills, 18 lessons, 188 actions, 9 domains</td><td class="n">419</td><td class="n">7,603</td><td class="n">18</td></tr>
+      <tr><td>cka-lab</td><td>26 drills, 13 lessons, 113 actions, 5 domains</td><td class="n">145</td><td class="n">5,115</td><td class="n">3</td></tr>
+      <tr><td>sec-lab</td><td>22 lessons, 95 actions, 12 challenges, 293 items</td><td class="n">14</td><td class="n">7,078</td><td class="n">9</td></tr>
+      <tr><td>chain-lab</td><td>12 lessons, 10 challenges, 32 attack steps, 27 deployments</td><td class="n">12 + 10 forge</td><td class="n">5,887</td><td class="n">3</td></tr>
+      <tr><td>ai-roadmap</td><td>22 lessons, 8 labs, 241 items</td><td class="n">26</td><td class="n">5,645</td><td class="n">9</td></tr>
+      <tr><td>portal</td><td>6 mounts; no test suite yet</td><td class="n">0</td><td class="n">2,008</td><td class="n">6</td></tr>
+      <tr><td>total</td><td>first commit 2026-10-22, last 2026-10-26</td><td class="n">616 + 10 forge</td><td class="n">33,336</td><td class="n">48</td></tr>
+    </tbody>
+  </table>
+  </div>
+<pre><code># counts, from each app's live API (loopback ports, token read from the app dir)
+q(){ curl -s -H "X-Sim-Token: $(cat $1/token.txt)" "http://localhost:$2$3"; }
+q ckad-sim 8099 /api/curriculum | python3 -c 'import sys,json; d=json.load(sys.stdin); print(d["total_drills"], d["total_lessons"])'        # 47 18
+q ckad-sim 8099 /api/scenarios  | python3 -c 'import sys,json; s=json.load(sys.stdin)["scenarios"]; print(sum(len(x["actions"]) for x in s), len({x["domain"] for x in s}))'   # 188 9
+q cka-lab  8094 /api/curriculum | python3 -c 'import sys,json; d=json.load(sys.stdin); print(d["total_drills"], d["total_lessons"])'        # 26 13
+q cka-lab  8094 /api/scenarios  | python3 -c 'import sys,json; s=json.load(sys.stdin)["scenarios"]; print(sum(len(x["actions"]) for x in s), len({x["domain"] for x in s}))'   # 113 5
+q sec-lab  8097 /api/path       | python3 -c 'import sys,json; print(json.load(sys.stdin)["totals"])'   # lessons 22, items 293, challenges 12
+q sec-lab  8097 /api/challenges | python3 -c 'import sys,json; c=json.load(sys.stdin)["challenges"]; print(len(c), len({x["category"] for x in c}))'   # 12 8
+sec-lab/.venv/bin/python -c 'import sys; sys.path.insert(0,"sec-lab"); import exercises as e; print(len(e.EXERCISES), sum(len(v["actions"]) for v in e.EXERCISES.values()))'   # 22 95
+q chain-lab 8095 /api/path      | python3 -c 'import sys,json; d=json.load(sys.stdin); print(d["totals"], d["chain"]["deployments"])'   # lessons 12, challenges 10, count 27
+q chain-lab 8095 /api/challenges | python3 -c 'import sys,json; c=json.load(sys.stdin)["challenges"]; print(len(c), sum(x["attack_steps_total"] for x in c))'   # 10 32
+ls chain-lab/target/src/*.sol | wc -l    # 12 = 10 challenges + FlagRegistry + MockERC20
+q ai-roadmap 8098 /api/path     | python3 -c 'import sys,json; print(json.load(sys.stdin)["totals"])'   # lessons 22, items 241
+ai-roadmap/.venv/bin/python -c 'import sys; sys.path.insert(0,"ai-roadmap"); import labs; print(len(labs.LABS), len(labs.RUNNERS))'   # 8 8
+q portal 8096 /api/tracks       | python3 -c 'import sys,json; print([(t["id"], t["total"]) for t in json.load(sys.stdin)])'   # 5 tracks + the review mount
+
+# tests
+for d in ckad-sim cka-lab sec-lab chain-lab ai-roadmap; do (cd $d &amp;&amp; .venv/bin/python -m pytest -q 2&gt;&amp;1 | tail -1); done
+#   419 passed / 145 passed / 14 passed / 12 passed / 26 passed   (portal: no pytest suite)
+(cd chain-lab/target &amp;&amp; forge test)        # 10 tests passed, 0 failed
+
+# the on-chain registry binding
+REG=$(python3 -c 'import json; print(json.load(open("chain-lab/target/deployments.json"))["registry"])')
+for id in chain-reentrancy chain-access-control chain-tx-origin chain-unchecked-call chain-delegatecall-collision \
+          chain-weak-randomness chain-oracle-manipulation chain-signature-replay chain-rounding-drain chain-dos-loop; do
+  cast call $REG 'isSolved(string)(bool)' $id --rpc-url http://localhost:8545; done     # 10 booleans, no revert
+cast call $REG 'peek(string)(string)' chain-dos-loop --rpc-url http://localhost:8545   # execution reverted: not solved
+
+# code size and history (tracked source, vendored forge output excluded)
+for d in ckad-sim cka-lab sec-lab chain-lab ai-roadmap portal; do (cd $d; echo "$d $(git rev-list --count HEAD) commits, \
+  $(git ls-files | grep -E '\.(py|html|js|css|sh|sol)$' | grep -vE '^target/(lib|out|cache|broadcast)/' | xargs cat | wc -l) lines"); done
+
+# cluster
+kubectl version | grep Server     # Server Version: v1.36.5+k3s1 (one node, Ready)
+
+# ckad-sim independent drill verifier (settle times are what it needs on this node)
+cd ckad-sim &amp;&amp; PYTHONPATH=&lt;dir holding scenarios_base.py&gt; .venv/bin/python scripts/verify_module.py \
+  scenarios_base scenarios_core scenarios_deploy scenarios_obs scenarios_obs2 scenarios_pod scenarios_sec
+# scenarios_base.py (4 lines, in this repo under scripts/) exposes the 10 original drills so the verifier can see them
+# result on 2026-10-26: 44/47 drills verified broken-&gt;fixed; svc-selector, liveness-port and init-blocked fail
+
+# screenshots
+/tmp/pwenv/bin/python scripts/shots.py    # headless Chromium, 414px, through the portal; fails if a token, hostname or key is visible
+</code></pre>
+</section>
+
+</main>
+
+<footer id="contact" class="wrap">
+  <h2 class="lbl">contact</h2>
+  <ul>
+    <li><a href="https://github.com/dediprakasa">github.com/dediprakasa</a></li>
+    <li><a href="mailto:dedprakasa@gmail.com">dedprakasa@gmail.com</a></li>
+    <li><a href="https://dediprakasa.github.io/deprak.github.io/">blog</a></li>
+  </ul>
+  <p class="fine">Static HTML and CSS, no build step, no scripts, no tracking. Source: <a href="https://github.com/dediprakasa/portfolio">dediprakasa/portfolio</a>.</p>
+</footer>
+</body>
+</html>
