@@ -132,7 +132,7 @@
   <h1 id="h-hero">I build tools where passing means proof, not self-report.</h1>
   <p class="lede">Below: five study labs and the portal in front of them. Every claim carries a number, and every number was re-measured on 2026-10-28 with the commands at the <a href="#how">bottom of the page</a>.</p>
   <ul class="hero-nums" aria-label="headline numbers">
-    <li><span class="n">780</span><span class="l">tests passing across 5 repos, run today</span></li>
+    <li><span class="n">841</span><span class="l">tests passing across 5 repos, run today</span></li>
     <li><span class="n">100</span><span class="l">Kubernetes drills (60 CKAD + 40 CKA) against a real k3s cluster</span></li>
     <li><span class="n">44</span><span class="l">exploit challenges (24 web + 20 on-chain) whose flags unlock only with recorded proof</span></li>
   </ul>
@@ -141,7 +141,7 @@
 <section id="thesis" aria-labelledby="h-thesis">
   <h2 class="lbl" id="h-thesis">thesis</h2>
   <p>Most study tools ask you whether you understood. Mine ask the system. A Kubernetes drill passes when jsonpath and exec-in-pod assertions pass on the cluster, not when a checkbox is ticked. A web exploit passes when the vulnerable code path recorded that it ran. An on-chain flag cannot be read until the contract itself reports <code>solved() == true</code>. The learner cannot talk the tool into a pass, and neither can I.</p>
-  <p>The same rule applies to my own claims. On 2026-10-28 I re-counted every drill, lesson, action and challenge from each app's live API, re-ran every test suite, and re-checked the on-chain registry with <code>cast</code>. Where a check failed, the number says so instead of being rounded up. The commands are at the bottom so a reader who cares can re-run them.</p>
+  <p>The same rule applies to my own claims. On 2026-10-28 I re-counted every drill, lesson, action and challenge from each app's live API, re-ran every test suite, and re-checked the on-chain registry with <code>cast</code>. Every drill and challenge is reachable from its curriculum, each placed in exactly one lesson: 60 of 60 CKAD drills, 40 of 40 CKA drills, 24 of 24 web challenges, 20 of 20 contracts. Where a check failed, the number says so instead of being rounded up. The commands are at the bottom so a reader who cares can re-run them.</p>
 </section>
 
 <section id="work" aria-labelledby="h-work">
@@ -155,12 +155,12 @@
       <div><dt>20</dt><dd>ordered lessons, every one of the 60 drills placed in one</dd></div>
       <div><dt>240</dt><dd>tap actions</dd></div>
       <div><dt>9</dt><dd>CKAD domains covered</dd></div>
-      <div><dt>485</dt><dd>pytest passing</dd></div>
-      <div><dt>9,112</dt><dd>lines (py + html + sh)</dd></div>
+      <div><dt>546</dt><dd>pytest passing</dd></div>
+      <div><dt>9,154</dt><dd>lines (py + html + sh)</dd></div>
     </dl>
     <div class="proof">
       <p><b>passing means:</b> every check is a jsonpath or exec-in-pod assertion run against the cluster. An independent verifier applies each drill into a throwaway namespace, confirms the broken state fails all of its checks, runs the documented fix, and confirms all checks pass.</p>
-      <p>On 2026-10-28 that verifier passed <b>59 of the 60</b> drills: 9 of the 10 base drills in a first run, then all 50 drills in the other seven modules in a second run after the first process was killed between modules. <code>svc-selector</code>, <code>liveness-port</code> and <code>init-blocked</code>, which it rejected the day before, were repaired and now pass both halves of the contract. The one it still rejects is <code>pvc-pending</code>: in the broken state the claim binds anyway and the pod runs, so both of its checks pass before the fix. It failed the same way on 2026-10-27 and had passed on 2026-10-26, so it is reported as an open drill, not a fixed one.</p>
+      <p>On 2026-10-28 that verifier passed <b>60 of the 60</b> drills, in two runs on the same day: the 50 drills in the other seven modules in one process, then the 10 base drills in another. The four drills it had rejected on 2026-10-27, <code>svc-selector</code>, <code>liveness-port</code>, <code>init-blocked</code> and <code>pvc-pending</code>, all pass both halves of the contract now. <code>pvc-pending</code> was the last to turn green. The first base run of 2026-10-28 still rejected it, 9 of 10, because in the broken state the claim bound anyway and the pod ran, the same failure as on 2026-10-27. The cause was the drill itself: its documented fix created a cluster-scoped StorageClass, and namespace teardown never removes cluster-scoped objects, so after the first verifier run every later broken state bound immediately and the drill could no longer fail. The fix is now namespace-scoped, the drill removes a leftover class before it sets up the broken state, and the base module was re-run twice after that change, 10 of 10 both times.</p>
       <p>The sandbox forces every command into the drill's namespace, rejects <code>-A</code> and cluster-scoped resources, limits <code>kubectl auth</code> to <code>can-i</code>, and gives <code>helm</code> only release and chart-reading subcommands.</p>
     </div>
     <p class="stack">python / fastapi / k3s v1.36.5 / kubectl / helm / kustomize / systemd / cloudflared</p>
@@ -250,7 +250,7 @@
   </ol>
   <p>The same review read the tunnel watchdog. It probed only the public URL, so a local backend blip looked like a dead tunnel: the watchdog rotated a healthy tunnel and the public URL changed for good. The fix probes the local backend first and keeps the tunnel when the app is the one that is down. It is in two of the six tunnel scripts so far; the other four are next.</p>
   <p>chain-lab was unpassable. The registry address in <code>deployments.json</code> was not the registry. <code>forge script</code> runs the deploy during its simulation phase, so the file-writing cheatcodes fired, then the broadcast failed on a nonce clash with another process using the same account, leaving files that pointed at contracts that were never deployed. Deploys now use an uncontended account, write pending files, and promote them only after every binding self-checks, 20 of them today.</p>
-  <p>None of this was caught by reading harder. It was caught by an independent judge script that re-runs every one of the 116 exercise actions through the live API and reports done only when all of them are, and by before/after assertions on every drill: the broken state has to fail every check, and the documented fix has to pass every check. On 2026-10-27 that drill verifier rejected four ckad-sim drills. Three of them, <code>svc-selector</code>, <code>liveness-port</code> and <code>init-blocked</code>, were repaired and re-verified on 2026-10-28, and the same day the 13 extra drills and the four unattached web challenges were mapped into their learning paths. Today the verifier passes 59 of the 60 ckad-sim drills. The one it rejects, <code>pvc-pending</code>, is still open. Self-report is not a pass.</p>
+  <p>None of this was caught by reading harder. It was caught by an independent judge script that re-runs every one of the 116 exercise actions through the live API and reports done only when all of them are, and by before/after assertions on every drill: the broken state has to fail every check, and the documented fix has to pass every check. On 2026-10-27 that drill verifier rejected four ckad-sim drills. Three of them, <code>svc-selector</code>, <code>liveness-port</code> and <code>init-blocked</code>, were repaired and re-verified on 2026-10-28. The fourth, <code>pvc-pending</code>, survived the first repair pass: its own documented fix left a cluster-scoped StorageClass behind, so every broken state after the first run bound at once and the drill could not fail. Once the fix was made namespace-scoped and the drill cleaned up the leftover class, it passed too. The same day the 13 extra drills and the four unattached web challenges were mapped into their learning paths, so every drill and challenge is now reachable from a curriculum: 60 of 60 CKAD drills, 40 of 40 CKA drills, 24 of 24 web challenges, 20 of 20 contracts, none duplicated, none orphaned. Today the verifier passes 60 of the 60 ckad-sim drills. Self-report is not a pass.</p>
 </section>
 
 <section id="try" aria-labelledby="h-try">
@@ -280,13 +280,13 @@
   <table>
     <thead><tr><th>repo</th><th>content</th><th>tests</th><th>lines</th><th>commits</th></tr></thead>
     <tbody>
-      <tr><td>ckad-sim</td><td>60 drills (all 60 in lessons), 20 lessons, 240 actions, 9 domains</td><td class="n">485</td><td class="n">9,112</td><td class="n">20</td></tr>
-      <tr><td>cka-lab</td><td>40 drills, 15 lessons, 179 actions, 5 domains</td><td class="n">173</td><td class="n">6,544</td><td class="n">4</td></tr>
+      <tr><td>ckad-sim</td><td>60 drills (all 60 in lessons), 20 lessons, 240 actions, 9 domains</td><td class="n">546</td><td class="n">9,154</td><td class="n">21</td></tr>
+      <tr><td>cka-lab</td><td>40 drills (all 40 in lessons), 15 lessons, 179 actions, 5 domains</td><td class="n">173</td><td class="n">6,544</td><td class="n">4</td></tr>
       <tr><td>sec-lab</td><td>24 lessons, 116 actions, 24 challenges (all 24 in lessons), 342 items</td><td class="n">14</td><td class="n">8,106</td><td class="n">13</td></tr>
-      <tr><td>chain-lab</td><td>15 lessons, 20 challenges, 59 attack steps, 56 deployments</td><td class="n">12 + 20 forge</td><td class="n">7,954</td><td class="n">6</td></tr>
+      <tr><td>chain-lab</td><td>15 lessons, 20 challenges (all 20 in lessons), 59 attack steps, 56 deployments</td><td class="n">12 + 20 forge</td><td class="n">7,954</td><td class="n">6</td></tr>
       <tr><td>ai-roadmap</td><td>22 lessons, 22 labs, 255 items</td><td class="n">96</td><td class="n">7,715</td><td class="n">11</td></tr>
       <tr><td>portal</td><td>6 mounts; no test suite yet</td><td class="n">0</td><td class="n">2,008</td><td class="n">6</td></tr>
-      <tr><td>total</td><td>first commit 2026-10-22, last 2026-10-28</td><td class="n">780 + 20 forge</td><td class="n">41,439</td><td class="n">60</td></tr>
+      <tr><td>total</td><td>first commit 2026-10-22, last 2026-10-28</td><td class="n">841 + 20 forge</td><td class="n">41,481</td><td class="n">61</td></tr>
     </tbody>
   </table>
   </div>
@@ -294,10 +294,15 @@
 q(){ curl -s -H "X-Sim-Token: $(cat $1/token.txt)" "http://localhost:$2$3"; }
 q ckad-sim 8099 /api/scenarios  | python3 -c 'import sys,json; s=json.load(sys.stdin)["scenarios"]; print(len(s), sum(len(x["actions"]) for x in s), len({x["domain"] for x in s}))'   # 60 240 9
 q ckad-sim 8099 /api/curriculum | python3 -c 'import sys,json; d=json.load(sys.stdin); print(d["total_drills"], d["total_lessons"])'        # 60 20  (total_drills counts drills placed in a lesson; since 2026-10-28 that is all of them, the 13 extra-* drills included)
+q ckad-sim 8099 /api/curriculum | python3 -c 'import sys,json; ids=[x["id"] for l in json.load(sys.stdin)["lessons"] for x in l["drills"]]; print(len(ids), len(set(ids)))'   # 60 60: every drill in exactly one lesson, no duplicate, no orphan
 q cka-lab  8094 /api/scenarios  | python3 -c 'import sys,json; s=json.load(sys.stdin)["scenarios"]; print(len(s), sum(len(x["actions"]) for x in s), len({x["domain"] for x in s}))'   # 40 179 5
 q cka-lab  8094 /api/curriculum | python3 -c 'import sys,json; d=json.load(sys.stdin); print(d["total_drills"], d["total_lessons"])'        # 40 15
+q cka-lab  8094 /api/curriculum | python3 -c 'import sys,json; ids=[x["id"] for l in json.load(sys.stdin)["lessons"] for x in l["drills"]]; print(len(ids), len(set(ids)))'   # 40 40
 q sec-lab  8097 /api/path       | python3 -c 'import sys,json; print(json.load(sys.stdin)["totals"])'   # lessons 24, items 342, challenges 24 (totals.challenges counts only lesson-attached ones; since 2026-10-28 that is all 24)
 q sec-lab  8097 /api/challenges | python3 -c 'import sys,json; c=json.load(sys.stdin)["challenges"]; print(len(c), len({x["category"] for x in c}))'   # 24 9
+lessons(){ q $1 $2 /api/path | python3 -c 'import sys,json; print(" ".join(l["id"] for p in json.load(sys.stdin)["phases"] for l in p["lessons"]))'; }
+for id in $(lessons sec-lab 8097);   do q sec-lab   8097 /api/lesson/$id | python3 -c 'import sys,json; print("\n".join(x["id"] for x in json.load(sys.stdin)["challenges"]))'; done | awk NF | sort | uniq -c | wc -l   # 24: every web challenge attached to one lesson
+for id in $(lessons chain-lab 8095); do q chain-lab 8095 /api/lesson/$id | python3 -c 'import sys,json; print("\n".join(x["id"] for x in json.load(sys.stdin)["challenges"]))'; done | awk NF | sort | uniq -c | wc -l   # 20: every contract challenge attached to one lesson
 sec-lab/.venv/bin/python -c 'import sys; sys.path.insert(0,"sec-lab"); import exercises as e; print(len(e.EXERCISES), sum(len(v["actions"]) for v in e.EXERCISES.values()))'   # 24 116
 python3 /tmp/judge_sec_exercises.py     # runs every exercise action through the live API: 116/116 actions done
 q chain-lab 8095 /api/path      | python3 -c 'import sys,json; d=json.load(sys.stdin); print(d["totals"], d["chain"]["deployments"])'   # lessons 15, challenges 20, count 56
@@ -310,7 +315,7 @@ q portal 8096 /api/tracks       | python3 -c 'import sys,json; print([(t["id"], 
 
 # tests
 for d in ckad-sim cka-lab sec-lab chain-lab ai-roadmap; do (cd $d &amp;&amp; .venv/bin/python -m pytest -q 2&gt;&amp;1 | tail -1); done
-#   485 passed / 173 passed / 14 passed / 12 passed / 96 passed   (portal: no pytest suite)
+#   546 passed / 173 passed / 14 passed / 12 passed / 96 passed   (portal: no pytest suite)
 (cd chain-lab/target &amp;&amp; forge test)        # 20 tests passed, 0 failed
 
 # the on-chain registry binding
@@ -330,8 +335,10 @@ kubectl version | grep Server     # Server Version: v1.36.5+k3s1 (one node, Read
 cd ckad-sim &amp;&amp; PYTHONPATH=&lt;dir holding scenarios_base.py&gt; .venv/bin/python scripts/verify_module.py \
   scenarios_base scenarios_core scenarios_deploy scenarios_obs scenarios_obs2 scenarios_pod scenarios_sec scenarios_extra
 # scenarios_base.py (4 lines, in this repo under scripts/) exposes the 10 original drills so the verifier can see them
-# result on 2026-10-28: 59/60 drills verified broken-&gt;fixed, in two runs: scenarios_base 9/10 (pvc-pending fails: the broken PVC binds anyway),
-# then the other seven modules 50/50 in one run. svc-selector, liveness-port and init-blocked, rejected on 2026-10-27, pass now.
+# result on 2026-10-28: 60/60 drills verified broken-&gt;fixed, in two runs: the seven non-base modules 50/50 in one run,
+# then scenarios_base 10/10 after the pvc-pending repair, twice (an earlier base run that morning was 9/10: the broken PVC bound anyway,
+# because the drill's own fix had left a cluster-scoped StorageClass behind). The four drills rejected on 2026-10-27 all pass now.
+# the per-module logs are tracked in ckad-sim/reports/
 
 # cka-lab independent drill verifier, same broken-&gt;fixed contract against the cluster
 cd cka-lab &amp;&amp; .venv/bin/python tests/verify_drills.py     # accepts drill ids; 2026-10-27: 36/36 in one run, then 4/4 for the rest = 40/40
